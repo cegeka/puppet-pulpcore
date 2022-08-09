@@ -211,6 +211,7 @@ class pulpcore (
   Array[Stdlib::Absolutepath] $allowed_import_path = ['/var/lib/pulp/sync_imports'],
   Array[Stdlib::Absolutepath] $allowed_export_path = [],
   Pulpcore::ChecksumTypes $allowed_content_checksums = ['sha224', 'sha256', 'sha384', 'sha512'],
+  Boolean $remote_user_authentication = true,
   String[1] $remote_user_environ_name = 'HTTP_REMOTE_USER',
   Integer[0] $worker_count = min(8, $facts['processors']['count']),
   Optional[Integer[0]] $worker_ttl = undef,

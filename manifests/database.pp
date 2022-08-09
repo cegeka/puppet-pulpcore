@@ -26,12 +26,13 @@ class pulpcore::database (
   }
 
   if ($pulpcore::admin_password) {
-    $admin_password = Sensitive("--password ${pulpcore::admin_password}")
+    $admin_password = "--password ${pulpcore::admin_password}"
   } else {
     $admin_password = '--random'
   }
 
-  pulpcore::admin { "reset-admin-password ${admin_password}":
+  pulpcore::admin { "set admin-password":
+    command     => "reset-admin-password ${admin_password}",
     unless      => 'pulpcore-manager dumpdata auth.User | grep "\"username\": \"admin\""',
     refreshonly => false,
     require     => Pulpcore::Admin['migrate --noinput'],
