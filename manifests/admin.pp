@@ -38,7 +38,8 @@ define pulpcore::admin (
   Stdlib::Absolutepath $working_dir = $pulpcore::user_home,
 ) {
   Concat <| title == 'pulpcore settings' |>
-  -> exec { "pulpcore-manager ${command}":
+  -> exec { "pulpcore-manager ${title}":
+    command     => "pulpcore-manager ${command}",
     user        => $user,
     path        => $path,
     cwd         => $working_dir,
