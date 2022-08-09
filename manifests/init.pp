@@ -224,6 +224,7 @@ class pulpcore (
   Boolean $cache_enabled = false,
   Optional[Variant[Integer[1], Enum['None']]] $cache_expires_ttl = undef,
   Enum['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG'] $log_level = 'INFO',
+  Optional[String] $admin_password = undef,
 ) {
   $settings_file = "${config_dir}/settings.py"
   $certs_dir = "${config_dir}/certs"
