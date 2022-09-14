@@ -35,22 +35,24 @@ class PuppetX::Pulpcore::RepoProvider < Puppet::Provider
 
   def exists?
     @property_hash[:ensure] == :present
+    puts "repo exists start-------"
 
     @pulp = Puppet::Util::PulpcoreUtil.new
-    @pulp.get_all("#{self.class.repo_type}",'remote').map { |remote|
-      puts remote
+    @pulp.get_all("#{self.class.repo_type}",'repository').map { |repo|
+      puts repo
       puts ""
-      puts remote['name']
+      puts repo['name']
       puts ""
       puts @property_hash[:name]
       puts ""
-      if remote['name'] == @property_hash[:name]
+      if repo['name'] == @property_hash[:name]
         puts "inside if, return true"
         return true
       end
     }
 
     puts "return false"
+    puts "repo exists end-------"
     return false
   end
 
@@ -63,8 +65,16 @@ class PuppetX::Pulpcore::RepoProvider < Puppet::Provider
   end
 
   def self.prefetch(resources)
+    # puts "resources -------"
+    # puts resources
+    # puts "------"
+
     repos = instances
-    return if repos.nil?
+    puts "repos -------"
+    puts repos
+    puts "------"
+
+    return if repos.nil? or repos.empty?
 
     puts "prefetch start"
     puts repos
@@ -72,9 +82,11 @@ class PuppetX::Pulpcore::RepoProvider < Puppet::Provider
     
 
     resources.each do |name, resource|
+      provider = repos.find { |repo| repo.name == name }
+
       puts provider
       puts ""
-      provider = repos.find { |repo| repo.name == name }
+      
       resource.provider = provider if provider
     end
     puts "prefetch end"
@@ -99,22 +111,29 @@ class PuppetX::Pulpcore::RepoProvider < Puppet::Provider
   end
 
   def flush
+    puts "repo flush start------"
     if @property_flush[:ensure] == :absent
+      puts "in delete"
       action = 'delete'
       params = []
     elsif @property_flush[:ensure] == :present
+      puts "in create"
       action = 'create'
       params = hash_to_params(params_hash)
     else
+      puts "in update"
       action = 'update'
       params = hash_to_params(params_hash)
     end
 
+    puts "end if"
     arr = [self.class.repo_type, 'repository', action, '--name', resource[:name], params]
+    puts "before flatten"
     pulp_admin(arr.flatten)
-
+    puts "after flatten"
     # Collect the resources again once they've been changed (that way `puppet
     # resource` will show the correct values after changes have been made).
     @property_hash = self.class.get_resource_properties(resource[:name])
+    puts "repo flush end------"
   end
 end

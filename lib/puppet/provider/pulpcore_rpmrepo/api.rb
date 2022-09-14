@@ -9,14 +9,19 @@ Puppet::Type.type(:pulpcore_rpmrepo).provide(:api, :parent => PuppetX::Pulpcore:
     'rpm'
   end
 
-  def self.get_resource_properties(repo_name,repo_type=nil)
+  def self.get_resource_properties(repo_name,repo_type=self.repo_type)
     hash = {}
     
+    puts "repo get_resource_properties start-----"
     puts repo_name
 
+    puts "repo:"
     repo = @pulp.get_info(repo_name,'repository',repo_type)
-    # remote = @pulp.get_info(repo_name,'remote',repo_type)
-    remote = @pulp.get_info("staid_shared_cegeka-custom-5-noarch_upstream",'remote',repo_type)
+    puts repo
+    puts "remote:"
+    remote = @pulp.get_info(repo_name,'remote',repo_type)
+    puts remote
+    
     puts '====remote'
     puts remote
     puts ""
@@ -50,6 +55,7 @@ Puppet::Type.type(:pulpcore_rpmrepo).provide(:api, :parent => PuppetX::Pulpcore:
     end]
     Puppet.debug "Repo properties: #{hash.inspect}"
 
+    puts "repo get_resource_properties end-----"
     hash
   end
 
