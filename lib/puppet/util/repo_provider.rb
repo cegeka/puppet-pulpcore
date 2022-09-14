@@ -35,6 +35,23 @@ class PuppetX::Pulpcore::RepoProvider < Puppet::Provider
 
   def exists?
     @property_hash[:ensure] == :present
+
+    @pulp = Puppet::Util::PulpcoreUtil.new
+    @pulp.get_all("#{self.class.repo_type}",'remote').map { |remote|
+      puts remote
+      puts ""
+      puts remote['name']
+      puts ""
+      puts @property_hash[:name]
+      puts ""
+      if remote['name'] == @property_hash[:name]
+        puts "inside if, return true"
+        return true
+      end
+    }
+
+    puts "return false"
+    return false
   end
 
   def create
@@ -48,10 +65,19 @@ class PuppetX::Pulpcore::RepoProvider < Puppet::Provider
   def self.prefetch(resources)
     repos = instances
     return if repos.nil?
+
+    puts "prefetch start"
+    puts repos
+    puts "------"
+    
+
     resources.each do |name, resource|
+      puts provider
+      puts ""
       provider = repos.find { |repo| repo.name == name }
       resource.provider = provider if provider
     end
+    puts "prefetch end"
   end
 
   def hash_to_params(params_hash)
@@ -76,7 +102,7 @@ class PuppetX::Pulpcore::RepoProvider < Puppet::Provider
     if @property_flush[:ensure] == :absent
       action = 'delete'
       params = []
-    elsif @property_flush[:ensure] == :create
+    elsif @property_flush[:ensure] == :present
       action = 'create'
       params = hash_to_params(params_hash)
     else

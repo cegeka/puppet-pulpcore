@@ -18,7 +18,6 @@ Puppet::Type.newtype(:pulpcore_rpmremote) do
       self[:client_key],
       self[:tls_validation],
       self[:proxy_url],
-      self[:max_retries],
       self[:policy],
       self[:total_timeout],
       self[:connect_timeout],
@@ -125,11 +124,6 @@ Puppet::Type.newtype(:pulpcore_rpmremote) do
 
   newproperty(:proxy_password) do
     desc "Proxy password"
-  end
-
-  newproperty(:max_retries) do
-    desc "Max amount of retries"
-    defaultto 3
   end
 
   newproperty(:policy) do

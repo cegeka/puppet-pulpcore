@@ -11,11 +11,15 @@ Puppet::Type.type(:pulpcore_rpmrepo).provide(:api, :parent => PuppetX::Pulpcore:
 
   def self.get_resource_properties(repo_name,repo_type=nil)
     hash = {}
+    
+    puts repo_name
 
     repo = @pulp.get_info(repo_name,'repository',repo_type)
-    remote = @pulp.get_info(repo_name,'remote',repo_type)
+    # remote = @pulp.get_info(repo_name,'remote',repo_type)
+    remote = @pulp.get_info("staid_shared_cegeka-custom-5-noarch_upstream",'remote',repo_type)
     puts '====remote'
-    puts remote['pulp_href']
+    puts remote
+    puts ""
     unless repo
       hash[:ensure] = :absent
       return hash
