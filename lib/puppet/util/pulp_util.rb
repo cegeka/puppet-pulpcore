@@ -28,6 +28,8 @@ module Puppet
             instance = 'repositories'
           when 'remote'
             instance = 'remotes'
+          when 'publication'
+            instance = 'publications'
         end
 
         if repo_type
@@ -49,6 +51,15 @@ module Puppet
             instance = 'repositories'
           when 'remote'
             instance = 'remotes'
+          when 'publication'
+            instance = 'publications'
+
+            puts "/v3/#{instance}/#{repo_type}/#{repo_type}/?name=#{name}"
+            info = request_api("/v3/#{instance}/#{repo_type}/#{repo_type}/?repository=#{name}")
+            puts info['results'][0]
+            puts "get_info end publication----"
+            
+            return info['results'][0]
         end
 
         raise '[get_info] name should never be nil.' unless name and name != ''

@@ -1,4 +1,5 @@
 require File.expand_path('../pulp_util', __FILE__)
+require 'json'
 
 module PuppetX
   module Pulpcore
@@ -58,6 +59,8 @@ class PuppetX::Pulpcore::RepoProvider < Puppet::Provider
 
   def create
     @property_flush[:ensure] = :present
+    
+    puts "create resource end---------"
   end
 
   def destroy
@@ -131,6 +134,45 @@ class PuppetX::Pulpcore::RepoProvider < Puppet::Provider
     puts "before flatten"
     pulp_admin(arr.flatten)
     puts "after flatten"
+
+    # automatically create a publication when a new repository is created
+    if @property_flush[:ensure] == :present
+
+      repo_get_arr = [self.class.repo_type, 'repository', 'show', '--name', resource[:name]]
+      repo_details = pulp_admin(repo_get_arr.flatten)
+
+      puts repo_details
+      repo_details_hash = JSON.parse(repo_details)
+      puts repo_details_hash
+      puts "------- "
+      puts repo_details_hash['pulp_href']
+      puts "------- "
+
+      publication_params = ["--repository=#{resource[:name]}"]
+      publication_arr = [self.class.repo_type, 'publication', 'create', publication_params]
+
+      puts "publication create start-------------------"
+      puts publication_arr.flatten
+      results = pulp_admin(publication_arr.flatten)
+      puts "publication create end-------------------"
+
+      
+      publication_details_arr = [self.class.repo_type, 'publication', 'show', "--href", repo_details_hash['pulp_href']]
+      publication_details = pulp_admin(publication_details_arr.flatten)
+      publication_details_hash = JSON.parse(publication_details)
+
+      puts publication_details_hash
+
+      puts resource[:relative_url]
+
+      distribution_params = ["--repository", "rpm:rpm:#{resource[:name]}", "--base-path", resource[:relative_url], "--name", resource[:name]]
+      distribution_arr = [self.class.repo_type, 'distribution', 'create', distribution_params]
+
+      result = pulp_admin(distribution_arr.flatten)
+      puts result
+      puts "######################"
+    end
+
     # Collect the resources again once they've been changed (that way `puppet
     # resource` will show the correct values after changes have been made).
     @property_hash = self.class.get_resource_properties(resource[:name])
