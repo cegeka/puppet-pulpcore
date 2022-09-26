@@ -41,11 +41,6 @@ module Puppet
       end
 
       def get_info(name,instance_type,repo_type)
-        puts "get_info start----"
-        puts name
-        puts instance_type
-        puts repo_type
-        puts ""
         case instance_type
           when 'repository'
             instance = 'repositories'
@@ -53,20 +48,10 @@ module Puppet
             instance = 'remotes'
           when 'publication'
             instance = 'publications'
-
-            puts "/v3/#{instance}/#{repo_type}/#{repo_type}/?name=#{name}"
-            info = request_api("/v3/#{instance}/#{repo_type}/#{repo_type}/?repository=#{name}")
-            puts info['results'][0]
-            puts "get_info end publication----"
-            
-            return info['results'][0]
         end
 
         raise '[get_info] name should never be nil.' unless name and name != ''
-        puts "/v3/#{instance}/#{repo_type}/#{repo_type}/?name=#{name}"
         info = request_api("/v3/#{instance}/#{repo_type}/#{repo_type}/?name=#{name}")
-        puts info['results'][0]
-        puts "get_info end----"
         info['results'][0]
       end
 

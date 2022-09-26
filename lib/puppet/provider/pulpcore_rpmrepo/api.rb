@@ -11,20 +11,10 @@ Puppet::Type.type(:pulpcore_rpmrepo).provide(:api, :parent => PuppetX::Pulpcore:
 
   def self.get_resource_properties(repo_name,repo_type=self.repo_type)
     hash = {}
-    
-    puts "repo get_resource_properties start-----"
-    puts repo_name
 
-    puts "repo:"
     repo = @pulp.get_info(repo_name,'repository',repo_type)
-    puts repo
-    puts "remote:"
     remote = @pulp.get_info(repo_name,'remote',repo_type)
-    puts remote
-    
-    puts '====remote'
-    puts remote
-    puts ""
+
     unless repo
       hash[:ensure] = :absent
       return hash
@@ -34,7 +24,7 @@ Puppet::Type.type(:pulpcore_rpmrepo).provide(:api, :parent => PuppetX::Pulpcore:
     hash[:ensure] = :present
     hash[:provider] = :pulpcore_rpmrepo
     hash[:description] = repo['description']
-    hash[:remote] = remote['pulp_href']
+    #hash[:remote] = remote['pulp_href']
     hash[:autopublish] = repo['autopublish']
     hash[:retain_repo_versions] = repo['retain_repo_versions']
     hash[:retain_package_versions] = repo['retain_package_versions']
@@ -55,7 +45,6 @@ Puppet::Type.type(:pulpcore_rpmrepo).provide(:api, :parent => PuppetX::Pulpcore:
     end]
     Puppet.debug "Repo properties: #{hash.inspect}"
 
-    puts "repo get_resource_properties end-----"
     hash
   end
 

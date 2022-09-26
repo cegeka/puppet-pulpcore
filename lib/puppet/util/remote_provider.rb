@@ -29,40 +29,23 @@ class PuppetX::Pulpcore::RemoteProvider < Puppet::Provider
   def self.instances
     @pulp = Puppet::Util::PulpcoreUtil.new
     @pulp.get_all("#{repo_type}",'remote').map { |remote|
-      # puts remote
       new(get_resource_properties(remote['name'],repo_type))
     }
   end
 
   def exists?
-    #@property_hash[:ensure] == :present
-    # puts "remote exists"
-
-    # puts "property hash:"
-    # puts @property_hash
-    # puts ""
-    # puts "remotes loop:"
     @pulp = Puppet::Util::PulpcoreUtil.new
     @pulp.get_all("#{self.class.repo_type}",'remote').map { |remote|
-      # puts remote
-      # puts ""
-      # puts remote['name']
-      # puts ""
-      # puts @property_hash[:name]
-      # puts ""
       if remote['name'] == @property_hash[:name]
-        # puts "inside if, return true"
         return true
       end
     }
 
-    # puts "return false"
     return false
   end
 
   def create
     @property_flush[:ensure] = :present
-    # puts "must create"
   end
 
   def destroy
@@ -98,15 +81,12 @@ class PuppetX::Pulpcore::RemoteProvider < Puppet::Provider
 
   def flush
     if @property_flush[:ensure] == :absent
-      # puts "flush: delete"
       action = 'delete'
       params = []
     elsif @property_flush[:ensure] == :present
-      # puts "flush: create"
       action = 'create'
       params = hash_to_params(params_hash)
     else
-      # puts "flush: update"
       action = 'update'
       params = hash_to_params(params_hash)
     end
