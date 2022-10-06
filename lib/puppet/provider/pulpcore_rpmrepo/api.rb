@@ -13,7 +13,6 @@ Puppet::Type.type(:pulpcore_rpmrepo).provide(:api, :parent => PuppetX::Pulpcore:
     hash = {}
 
     repo = @pulp.get_info(repo_name,'repository',repo_type)
-    remote = @pulp.get_info(repo_name,'remote',repo_type)
 
     unless repo
       hash[:ensure] = :absent
@@ -24,8 +23,8 @@ Puppet::Type.type(:pulpcore_rpmrepo).provide(:api, :parent => PuppetX::Pulpcore:
     hash[:ensure] = :present
     hash[:provider] = :pulpcore_rpmrepo
     hash[:description] = repo['description']
-    #hash[:remote] = remote['pulp_href']
-    hash[:autopublish] = repo['autopublish']
+    hash[:remote] = repo['remote']
+    hash[:autopublish] = repo['autopublish'].to_s
     hash[:retain_repo_versions] = repo['retain_repo_versions']
     hash[:retain_package_versions] = repo['retain_package_versions']
     hash[:metadata_checksum_type] = repo['metadata_checksum_type']

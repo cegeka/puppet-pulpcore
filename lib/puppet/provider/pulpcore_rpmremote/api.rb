@@ -16,7 +16,8 @@ Puppet::Type.type(:pulpcore_rpmremote).provide(:api, :parent => PuppetX::Pulpcor
   ].each do |method|
     method = method.to_sym
     define_method method do
-      if resource[method] && File.read(resource[method]) == @property_hash[method]
+      #if resource[method] && File.read(resource[method]) == @property_hash[method]
+      if resource[method] && File.read(resource[method])
         resource[method]
       else
         nil
@@ -42,7 +43,7 @@ Puppet::Type.type(:pulpcore_rpmremote).provide(:api, :parent => PuppetX::Pulpcor
     hash[:ca_cert] = remote['ca_cert']
     hash[:client_cert] = remote['client_cert']
     hash[:client_key] = remote['client_key']
-    hash[:tls_validation] = remote['tls_validation']
+    hash[:tls_validation] = remote['tls_validation'].to_s
     hash[:proxy_url] = remote['proxy_url']
     hash[:proxy_username] = remote['proxy_username']
     hash[:proxy_password] = remote['proxy_password']
@@ -81,9 +82,9 @@ Puppet::Type.type(:pulpcore_rpmremote).provide(:api, :parent => PuppetX::Pulpcor
     # We actually should only use these defaults when creating new resources, so the defaults are now in the provider (in this method).
     params = {}
     params.merge!({ '--url' => resource[:url] }) if resource[:url]
-    params.merge!({ '--ca-cert' => '@' + resource[:ca_cert] }) if resource[:ca_cert]
-    params.merge!({ '--client-cert' => '@' + resource[:client_cert] }) if resource[:client_cert]
-    params.merge!({ '--client-key' => '@' + resource[:client_key] }) if resource[:client_key]
+    params.merge!({ '--ca-cert' => '@'+resource[:ca_cert] }) if resource[:ca_cert]
+    params.merge!({ '--client-cert' => '@'+resource[:client_cert] }) if resource[:client_cert]
+    params.merge!({ '--client-key' => '@'+resource[:client_key] }) if resource[:client_key]
     params.merge!({ '--connect-timeout' => resource[:connect_timeout] }) if resource[:connect_timeout]
     params.merge!({ '--download-concurrency' => resource[:download_concurrency] }) if resource[:download_concurrency]
     params.merge!({ '--username' => resource[:username] }) if resource[:username]

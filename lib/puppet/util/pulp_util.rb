@@ -55,6 +55,25 @@ module Puppet
         info['results'][0]
       end
 
+      def get_href(name,instance_type,repo_type)
+        case instance_type
+          when 'repository'
+            instance = 'repositories'
+          when 'remote'
+            instance = 'remotes'
+          when 'publication'
+            instance = 'publications'
+        end
+
+        raise '[get_info] name should never be nil.' unless name and name != ''
+        info = request_api("/v3/#{instance}/#{repo_type}/#{repo_type}/?name=#{name}")
+        if info['results'].empty?
+          return nil
+        else
+          info['results'][0]['pulp_href']
+        end
+      end
+
       private
 
       def parse_config(path)

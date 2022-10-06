@@ -34,14 +34,15 @@ class PuppetX::Pulpcore::RemoteProvider < Puppet::Provider
   end
 
   def exists?
-    @pulp = Puppet::Util::PulpcoreUtil.new
-    @pulp.get_all("#{self.class.repo_type}",'remote').map { |remote|
-      if remote['name'] == @property_hash[:name]
-        return true
-      end
-    }
+  #  @pulp = Puppet::Util::PulpcoreUtil.new
+  #  @pulp.get_all("#{self.class.repo_type}",'remote').map { |remote|
+  #    if remote['name'] == @property_hash[:name]
+  #      return true
+  #    end
+  #  }
 
-    return false
+  #  return false
+    @property_hash[:ensure] == :present
   end
 
   def create

@@ -19,7 +19,6 @@ Puppet::Type.newtype(:pulpcore_rpmrepo) do
       self[:autopublish],
       self[:retain_repo_versions],
       self[:retain_package_versions],
-      self[:relative_url],
     ]
   end
 
@@ -93,10 +92,6 @@ Puppet::Type.newtype(:pulpcore_rpmrepo) do
 
   newproperty(:package_checksum_type) do
     desc "Checksum type of packages"
-  end
-
-  newproperty(:relative_url) do
-    desc "The relative url of the repository"
   end
 
   newproperty(:gpgcheck) do

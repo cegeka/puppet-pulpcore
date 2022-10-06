@@ -9,23 +9,9 @@ Puppet::Type.newtype(:pulpcore_rpmremote) do
   autorequire(:file) do
     [
       self[:conf_file],
-      self[:name],
-      self[:url],
       self[:ca_cert],
-      self[:username],
-      self[:password],
       self[:client_cert],
       self[:client_key],
-      self[:tls_validation],
-      self[:proxy_url],
-      self[:policy],
-      self[:total_timeout],
-      self[:connect_timeout],
-      self[:sock_connect_timeout],
-      self[:sock_read_timeout],
-      self[:rate_limit],
-      self[:sles_auth_token],
-      self[:download_concurrency],
     ]
   end
 
