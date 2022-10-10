@@ -39,7 +39,11 @@ Puppet::Functions.create_function(:'get_href') do
       return 'undefined'
     end
 
-    href = item.get_href(name,instance_type,repo_type)
+    begin
+      href = item.get_href(name,instance_type,repo_type)
+    rescue
+      return 'undefined'
+    end
 
     if href.nil?
       return 'undefined'

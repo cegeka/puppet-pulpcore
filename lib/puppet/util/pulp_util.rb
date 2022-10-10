@@ -73,9 +73,7 @@ module Puppet
 
         raise '[get_href] name, instance_type or repo_type should never be nil.' unless name and name != '' and instance_type and repo_type
         info = request_api("/v3/#{instance}/#{repo_type}/#{repo_type}/?name=#{name}")
-        if info.nil?
-          return nil
-        elsif info['results'].empty?
+        if info.nil? or info['results'].empty?
           return nil
         else
           info['results'][0]['pulp_href']
