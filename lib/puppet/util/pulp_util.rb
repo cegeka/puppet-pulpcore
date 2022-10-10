@@ -8,13 +8,13 @@ module Puppet
   module Util
     class PulpcoreUtil
       def initialize (global_config_path = '/etc/pulp/cli.toml', root_config_path = '/root/.config/pulp/cli.toml')
-        global_config   = parse_config(global_config_path)
-        root_config     = parse_config(root_config_path)
-        @config  = {}
-        @root_config  = {}
+        global_config        = parse_config(global_config_path)
+        root_config          = parse_config(root_config_path)
+        @config = {}
+        @root_config = {}
         @config[:base_url]   = global_config['cli']['base_url']   || "https://localhost"
         @config[:port]       = global_config['cli']['port']       || "443"
-        @config[:api_prefix] = global_config['cli']['api_prefix'] || "/pulp/api"
+        @config[:api_prefix] = global_config['cli']['api_prefix'] || "/pulp/api" rescue "/pulp/api"
         @config[:verify_ssl] = global_config['cli']['verify_ssl'] || true
         @config[:dry_run]    = global_config['cli']['dry_run']    || false
         @root_config[:username] = root_config['cli']['username']  || "admin"
@@ -37,7 +37,13 @@ module Puppet
         else
           repos = request_api("/v3/#{instance}/")
         end
-        repos['results']
+
+        if repos.nil?
+          return []
+        else
+          repos['results']
+        end
+
       end
 
       def get_info(name,instance_type,repo_type)
@@ -52,7 +58,7 @@ module Puppet
 
         raise '[get_info] name should never be nil.' unless name and name != ''
         info = request_api("/v3/#{instance}/#{repo_type}/#{repo_type}/?name=#{name}")
-        info['results'][0]
+        info['results'][0] rescue []
       end
 
       def get_href(name,instance_type,repo_type)
@@ -67,7 +73,9 @@ module Puppet
 
         raise '[get_href] name, instance_type or repo_type should never be nil.' unless name and name != '' and instance_type and repo_type
         info = request_api("/v3/#{instance}/#{repo_type}/#{repo_type}/?name=#{name}")
-        if info['results'].empty?
+        if info.nil?
+          return nil
+        elsif info['results'].empty?
           return nil
         else
           info['results'][0]['pulp_href']
@@ -84,7 +92,7 @@ module Puppet
             file = File.new(path, "r")
             while (line = file.gets)
               if line =~ /(^#|^\s+$)/
-                # nada
+                # comment
               elsif line =~ /^\[(.+)\]$/
                 section = $1.strip
                 settings[section.strip] = Hash.new
@@ -97,7 +105,7 @@ module Puppet
             end
             file.close
           rescue => err
-            puts "Exception: #{err}"
+            Puppet::Util::Warnings.warnonce("Exception: #{err}")
           end
         end
 
@@ -119,7 +127,7 @@ module Puppet
             raise Puppet::Error, "https request returned code #{resp.code}. Connection details: url=#{uri}"
           end
         rescue Exception => e
-          raise Puppet::Error, "https request threw exception #{e.message}. Connection details: url=#{uri}"
+          Puppet::Util::Warnings.warnonce("https request threw exception #{e.message}. Connection details: url=#{uri}")
         end
       end
 

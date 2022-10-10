@@ -1,5 +1,4 @@
 require File.expand_path('../pulp_util', __FILE__)
-require 'json'
 
 module PuppetX
   module Pulpcore
@@ -36,15 +35,6 @@ class PuppetX::Pulpcore::RepoProvider < Puppet::Provider
 
   def exists?
     @property_hash[:ensure] == :present
-
-    @pulp = Puppet::Util::PulpcoreUtil.new
-    @pulp.get_all("#{self.class.repo_type}",'repository').map { |repo|
-      if repo['name'] == @property_hash[:name]
-        return true
-      end
-    }
-
-    return false
   end
 
   def create

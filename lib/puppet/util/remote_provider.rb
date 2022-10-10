@@ -34,14 +34,6 @@ class PuppetX::Pulpcore::RemoteProvider < Puppet::Provider
   end
 
   def exists?
-  #  @pulp = Puppet::Util::PulpcoreUtil.new
-  #  @pulp.get_all("#{self.class.repo_type}",'remote').map { |remote|
-  #    if remote['name'] == @property_hash[:name]
-  #      return true
-  #    end
-  #  }
-
-  #  return false
     @property_hash[:ensure] == :present
   end
 
@@ -55,7 +47,7 @@ class PuppetX::Pulpcore::RemoteProvider < Puppet::Provider
 
   def self.prefetch(resources)
     remotes = instances
-    return if remotes.nil?
+    return if remotes.nil? or remotes.empty?
     resources.each do |name, resource|
       provider = remotes.find { |remote| remote.name == name }
       resource.provider = provider if provider

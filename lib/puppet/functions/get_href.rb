@@ -33,7 +33,12 @@ Puppet::Functions.create_function(:'get_href') do
       type = repo_type.unwrap
     end
 
-    item = Puppet::Util::PulpcoreUtil.new
+    begin
+      item = Puppet::Util::PulpcoreUtil.new
+    rescue
+      return 'undefined'
+    end
+
     href = item.get_href(name,instance_type,repo_type)
 
     if href.nil?
