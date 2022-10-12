@@ -1,11 +1,11 @@
-require File.expand_path('../pulp_util', __FILE__)
+require File.join(File.dirname(__FILE__), '.', 'pulp_util')
 
 module PuppetX
   module Pulpcore
   end
 end
 
-class PuppetX::Pulpcore::RemoteProvider < Puppet::Provider
+class Puppet::Provider::RemoteProvider < Puppet::Provider
   # Implementers must:
   #
   # # Set the repo type (iso, puppet, rpm)

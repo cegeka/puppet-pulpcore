@@ -1,6 +1,6 @@
-require File.expand_path('../../../util/repo_provider', __FILE__)
+require File.join(File.dirname(__FILE__), '../../util', 'repo_provider')
 
-Puppet::Type.type(:pulpcore_rpmrepo).provide(:api, :parent => PuppetX::Pulpcore::RepoProvider) do
+Puppet::Type.type(:pulpcore_rpmrepo).provide(:api, :parent => Puppet::Provider::RepoProvider) do
   commands :pulp_admin => '/usr/bin/pulp'
 
   mk_resource_methods
