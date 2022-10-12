@@ -1,9 +1,3 @@
-require 'net/http'
-require 'net/https'
-require 'openssl'
-require 'uri'
-require 'json'
-
 module Puppet
   module Util
     class PulpcoreUtil
@@ -112,6 +106,10 @@ module Puppet
 
       def request_api(path,action='get')
         begin
+          require 'net/http'
+          require 'net/https'
+          require 'uri'
+          require 'json'
           uri = URI("#{@config[:base_url]}:#{@config[:port]}#{@config[:api_prefix]}#{path}")
 
           req = Net::HTTP::Get.new(uri.request_uri)
@@ -131,6 +129,7 @@ module Puppet
 
       def connection
         unless @conn
+          require 'openssl'
 
           uri = URI("#{@config[:base_url]}:#{@config[:port]}")
 
