@@ -1,11 +1,11 @@
-require File.join(File.dirname(__FILE__), '.', 'pulp_util')
+require File.join(File.dirname(__FILE__), '../util', 'pulp_util')
 
 module PuppetX
   module Pulpcore
   end
 end
 
-class Puppet::Provider::RemoteProvider < Puppet::Provider
+class Puppet::Provider::RepoProvider < Puppet::Provider
   # Implementers must:
   #
   # # Set the repo type (iso, puppet, rpm)
@@ -28,8 +28,8 @@ class Puppet::Provider::RemoteProvider < Puppet::Provider
 
   def self.instances
     @pulp = Puppet::Util::PulpcoreUtil.new
-    @pulp.get_all("#{repo_type}",'remote').map { |remote|
-      new(get_resource_properties(remote['name'],repo_type))
+    @pulp.get_all("#{repo_type}",'repository').map { |repo|
+      new(get_resource_properties(repo['name'],repo_type))
     }
   end
 
@@ -46,10 +46,12 @@ class Puppet::Provider::RemoteProvider < Puppet::Provider
   end
 
   def self.prefetch(resources)
-    remotes = instances
-    return if remotes.nil? or remotes.empty?
+    repos = instances
+    return if repos.nil? or repos.empty?
+
     resources.each do |name, resource|
-      provider = remotes.find { |remote| remote.name == name }
+      provider = repos.find { |repo| repo.name == name }
+
       resource.provider = provider if provider
     end
   end
@@ -84,7 +86,7 @@ class Puppet::Provider::RemoteProvider < Puppet::Provider
       params = hash_to_params(params_hash)
     end
 
-    arr = [self.class.repo_type, 'remote', action, '--name', resource[:name], params]
+    arr = [self.class.repo_type, 'repository', action, '--name', resource[:name], params]
     pulp_admin(arr.flatten)
 
     # Collect the resources again once they've been changed (that way `puppet
