@@ -2,8 +2,9 @@
 #
 # @api private
 class pulpcore::install {
-  package { $pulpcore::package_name:
+  package { 'pulpcore':
     ensure => present,
+    allow_virtual => true,
   }
 
   if $facts['os']['selinux']['enabled'] {

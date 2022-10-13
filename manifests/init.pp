@@ -178,7 +178,6 @@
 class pulpcore (
   String $user = 'pulp',
   String $group = 'pulp',
-  String $package_name = 'pulpcore',
   Stdlib::Absolutepath $user_home = '/var/lib/pulp',
   Stdlib::Absolutepath $config_dir = '/etc/pulp',
   Stdlib::Absolutepath $cache_dir = '/var/lib/pulp/tmp',

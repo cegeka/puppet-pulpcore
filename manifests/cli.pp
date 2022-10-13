@@ -41,7 +41,6 @@ class pulpcore::cli (
 ) {
   package { 'pulp-cli':
     ensure => $version,
-    allow_virtual => true,
   }
   -> file { '/etc/pulp/cli.toml':
     ensure  => file,

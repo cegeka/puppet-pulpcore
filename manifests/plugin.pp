@@ -19,7 +19,6 @@ define pulpcore::plugin (
 ) {
   package { $package_name:
     ensure => present,
-    allow_virtual => true,
   }
 
   if $config {
