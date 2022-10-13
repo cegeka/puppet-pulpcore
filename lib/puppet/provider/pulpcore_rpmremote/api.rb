@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '../', 'remote_provider')
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'remote_provider'))
 
 Puppet::Type.type(:pulpcore_rpmremote).provide(:api, :parent => Puppet::Provider::RemoteProvider) do
   commands :pulp_admin => '/usr/bin/pulp'
