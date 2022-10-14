@@ -1,4 +1,5 @@
-require_relative '../util/pulpcore_util.rb'
+require File.expand_path(File.join(File.dirname(__FILE__), '../util', 'pulpcore_util'))
+
 # @summary
 #   Get the href of an object in Pulp
 #
@@ -33,20 +34,16 @@ Puppet::Functions.create_function(:'get_href') do
       type = repo_type.unwrap
     end
 
-    begin
-      item = Puppet::Util::PulpcoreUtil.new
-    rescue
-      return 'undefined'
-    end
+    item = Puppet::Util::PulpcoreUtil.new
 
     begin
       href = item.get_href(name,instance_type,repo_type)
     rescue
-      return 'undefined'
+      return 'href_lookup_error'
     end
 
     if href.nil?
-      return 'undefined'
+      return 'href_undefined'
     else
       return href
     end
