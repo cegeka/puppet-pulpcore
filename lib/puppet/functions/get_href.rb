@@ -46,18 +46,21 @@ Puppet::Functions.create_function(:'get_href') do
       end
       item = Puppet::Util::PulpcoreUtil.new
     rescue => err
+      Puppet.debug("pending_pulpcore_util for: #{name} #{instance_type}/#{repo_type}")
       Puppet::Util::Warnings.warnonce("Error while creating PulpcoreUtil: #{err}")
-      return "pending_pulpcore_util for: #{name} #{instance_type}/#{repo_type}"
+      return "pending_pulpcore_util_#{name}"
     end
 
     begin
       href = item.get_href(name,instance_type,repo_type)
     rescue
-      return "href_lookup_error for: #{name} #{instance_type}/#{repo_type}"
+      Puppet.debug("href_lookup_error for: #{name} #{instance_type}/#{repo_type}")
+      return "href_lookup_error_#{name}"
     end
 
     if href.nil?
-      return "href_undefined for: #{name} #{instance_type}/#{repo_type}"
+      Puppet.debug("href_undefined for: #{name} #{instance_type}/#{repo_type}")
+      return "href_undefined_#{name}"
     else
       return href
     end
