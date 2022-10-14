@@ -41,7 +41,8 @@ Puppet::Functions.create_function(:'get_href') do
 
     begin
       item = Puppet::Util::PulpcoreUtil.new
-    rescue
+    rescue => err
+      Puppet::Util::Warnings.warnonce("Error while creating PulpcoreUtil: #{err}")
       return 'pending_pulpcore_util'
     end
 
