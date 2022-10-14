@@ -34,7 +34,11 @@ Puppet::Functions.create_function(:'get_href') do
       type = repo_type.unwrap
     end
 
-    item = Puppet::Util::PulpcoreUtil.new
+    begin
+      item = Puppet::Util::PulpcoreUtil.new
+    rescue
+      return 'pending_pulpcore_util'
+    end
 
     begin
       href = item.get_href(name,instance_type,repo_type)
