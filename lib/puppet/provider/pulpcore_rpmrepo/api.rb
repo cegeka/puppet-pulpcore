@@ -11,8 +11,21 @@ Puppet::Type.type(:pulpcore_rpmrepo).provide(:api, :parent => Puppet::Provider::
 
   def self.get_resource_properties(repo_name,repo_type=self.repo_type)
     hash = {}
+    remote_href = 'undefined'
 
     repo = @pulp.get_info(repo_name,'repository',repo_type)
+
+    begin
+      remote = @pulp.get_href(repo_name,'remote',repo_type)
+      Puppet.debug("[Pulpcore::Rpmrepo] found remote #{remote}")
+      if repo['remote'] == remote
+        remote_href = repo_name
+      else
+        remote_href = remote
+      end
+    rescue
+      Puppet::Util::Warnings.warnonce("Repository remote #{repo_name} doesn't exist (yet?)")
+    end
 
     unless repo
       hash[:ensure] = :absent
@@ -23,7 +36,7 @@ Puppet::Type.type(:pulpcore_rpmrepo).provide(:api, :parent => Puppet::Provider::
     hash[:ensure] = :present
     hash[:provider] = :pulpcore_rpmrepo
     hash[:description] = repo['description']
-    hash[:remote] = repo['remote']
+    hash[:remote] = remote_href
     hash[:autopublish] = repo['autopublish'].to_s
     hash[:retain_repo_versions] = repo['retain_repo_versions']
     hash[:retain_package_versions] = repo['retain_package_versions']
@@ -61,7 +74,7 @@ Puppet::Type.type(:pulpcore_rpmrepo).provide(:api, :parent => Puppet::Provider::
     params.merge!({ '--description' => resource[:description] }) if resource[:description]
     params.merge!({ '--retain-package-versions' => resource[:retain_package_versions] }) if resource[:retain_package_versions]
     params.merge!({ '--retain-repo-versions' => resource[:retain_repo_versions] }) if resource[:retain_repo_versions]
-    params.merge!({ '--remote' => resource[:remote] }) if resource[:remote]
+    params.merge!({ '--remote' => name }) if resource[:remote]
     params.merge!({ '--metadata-checksum-type' => resource[:metadata_checksum_type] }) if resource[:metadata_checksum_type]
     params.merge!({ '--package-checksum-type' => resource[:package_checksum_type] }) if resource[:package_checksum_type]
     params.merge!({ '--gpgcheck' => resource[:gpgcheck] }) if resource[:gpgcheck]

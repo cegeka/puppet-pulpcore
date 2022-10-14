@@ -82,7 +82,7 @@ Puppet::Type.newtype(:pulpcore_rpmrepo) do
   end
 
   newproperty(:remote) do
-    desc "URL of the external source repository to sync"
+    desc "Name of the external source repository to sync"
     defaultto('unknown')
   end
 
