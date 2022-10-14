@@ -1,4 +1,5 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '../util', 'pulpcore_util'))
+#require File.expand_path(File.join(File.dirname(__FILE__), '../util', 'pulpcore_util'))
+require_relative '../util/pulpcore_util'
 
 module PuppetX
   module Pulpcore
@@ -40,20 +41,23 @@ Puppet::Functions.create_function(:'get_href') do
     end
 
     begin
+      if defined?(Puppet::Util::PulpcoreUtil) != 'constant' && Puppet::Util::PulpcoreUtil.class != Class
+        raise Puppet::Error, 'Class Puppet::Util::PulpcoreUtil doesn\'t exist'
+      end
       item = Puppet::Util::PulpcoreUtil.new
     rescue => err
       Puppet::Util::Warnings.warnonce("Error while creating PulpcoreUtil: #{err}")
-      return 'pending_pulpcore_util'
+      return "pending_pulpcore_util for: #{name} #{instance_type}/#{repo_type}"
     end
 
     begin
       href = item.get_href(name,instance_type,repo_type)
     rescue
-      return 'href_lookup_error'
+      return "href_lookup_error for: #{name} #{instance_type}/#{repo_type}"
     end
 
     if href.nil?
-      return 'href_undefined'
+      return "href_undefined for: #{name} #{instance_type}/#{repo_type}"
     else
       return href
     end
