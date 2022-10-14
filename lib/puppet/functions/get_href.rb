@@ -1,4 +1,4 @@
-require_relative '../util/pulp_util.rb'
+require_relative '../util/pulpcore_util.rb'
 # @summary
 #   Get the href of an object in Pulp
 #
