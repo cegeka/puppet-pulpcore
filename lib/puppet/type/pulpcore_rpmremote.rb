@@ -119,22 +119,19 @@ Puppet::Type.newtype(:pulpcore_rpmremote) do
 
   newproperty(:total_timeout) do
     desc "Maximum timeout"
-    defaultto 3
+    defaultto 300
   end
 
   newproperty(:connect_timeout) do
     desc "Connection timeout"
-    defaultto 3
   end
 
   newproperty(:sock_connect_timeout) do
     desc "Socket timeout"
-    defaultto 3
   end
 
   newproperty(:sock_read_timeout) do
     desc "Socket read timeout"
-    defaultto 3
   end
 
   newproperty(:rate_limit) do
