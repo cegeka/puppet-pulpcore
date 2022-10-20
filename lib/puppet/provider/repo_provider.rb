@@ -76,7 +76,7 @@ class Puppet::Provider::RepoProvider < Puppet::Provider
 
   def flush
     if @property_flush[:ensure] == :absent
-      action = 'delete'
+      action = 'destroy'
       params = []
     elsif @property_flush[:ensure] == :present
       action = 'create'
