@@ -13,6 +13,7 @@ module Puppet
         @config[:dry_run]    = global_config['cli']['dry_run']    || false
         @root_config[:username] = root_config['cli']['username']  || "admin"
         @root_config[:password] = root_config['cli']['password']  || "password"
+        @root_config[:limit]    = root_config['cli']['limit']     || "10000"
         @config.merge!(@root_config)
       end
 
@@ -27,9 +28,9 @@ module Puppet
         end
 
         if repo_type
-          repos = request_api("/v3/#{instance}/#{repo_type}/#{repo_type}/")
+          repos = request_api("/v3/#{instance}/#{repo_type}/#{repo_type}/?limit=#{@config[:limit]}")
         else
-          repos = request_api("/v3/#{instance}/")
+          repos = request_api("/v3/#{instance}/?limit=#{@config[:limit]}")
         end
 
         if repos.nil?
@@ -104,7 +105,7 @@ module Puppet
         settings
       end
 
-      def request_api(path,action='get')
+      def request_api(path)
         begin
           require 'net/http'
           require 'net/https'
@@ -114,6 +115,7 @@ module Puppet
 
           req = Net::HTTP::Get.new(uri.request_uri)
           req.basic_auth @config[:username], @config[:password]
+
           resp = connection.request req
           if resp.code == '200'
             JSON.parse(resp.body)
